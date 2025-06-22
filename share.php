@@ -55,34 +55,12 @@ if (isset($_GET['id'])) {
         <p>Select how you want to share the contact:</p>
 
         <div class="share-options">
-            <a href="<?php echo $whatsappLink; ?>" class="btn btn-primary" target="_blank">WhatsApp</a>
+            <a href="<?php echo $whatsappLink; ?>" class="btn btn-success" target="_blank">WhatsApp</a>
             <a href="<?php echo $smsLink; ?>" class="btn btn-secondary" target="_blank">SMS</a>
             <a href="<?php echo $emailLink; ?>" class="btn btn-info" target="_blank">Email</a>
         </div>
     </div>
 
-    <script>
-                //ToggleMode
-                const themeToggle = document.getElementById('themeToggle');
-        const themeLabel = document.querySelector('.theme-label');
-        const body = document.body;
-        
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            body.classList.add('dark-mode');
-            themeLabel.textContent = 'Dark Mode';
-        } else {
-            themeLabel.textContent = 'Light Mode';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDarkMode = body.classList.contains('dark-mode');
-            themeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

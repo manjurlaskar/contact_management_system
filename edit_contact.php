@@ -60,6 +60,7 @@ $isCustomGroup = !in_array($row['group_name'], $predefinedGroups);
 </div>
 <span class="theme-label">Light Mode</span>
         <h2>Edit Contact</h2>
+        <a href="index.php" class="btn btn-secondary">Back to Home</a>
         <hr>
         <div class="form">
             <form action="edit_contact.php?id=<?php echo $id; ?>" method="POST">
@@ -67,13 +68,13 @@ $isCustomGroup = !in_array($row['group_name'], $predefinedGroups);
                 <input type="text" name="name" value="<?php echo htmlspecialchars($row['name']); ?>" placeholder="Enter Name" required>
 
                 <label for="email">Email</label>
-                <input type="email" name="email" value="<?php echo htmlspecialchars($row['email']); ?>" placeholder="Enter Email" required>
+                <input type="email" name="email" value="<?php echo htmlspecialchars($row['email']); ?>" placeholder="Enter Email">
 
                 <label for="phone">Phone No.</label>
                 <input type="text" name="phone" value="<?php echo htmlspecialchars($row['phone']); ?>" placeholder="Enter Phone Number" required>
 
                 <label for="group">Group</label>
-                <select name="group_select" id="groupSelect" onchange="toggleCustomGroup()" required>
+                <select name="group_select" id="groupSelect">
                     <option value="">-- Select Group --</option>
                     <?php foreach ($predefinedGroups as $pg): ?>
                         <option value="<?php echo $pg; ?>" <?php echo ($row['group_name'] === $pg) ? 'selected' : ''; ?>>
@@ -96,49 +97,10 @@ $isCustomGroup = !in_array($row['group_name'], $predefinedGroups);
         </div>
         <div class="form-actions">
             <a href="view_contacts.php" class="btn btn-secondary">Back to Contacts</a>
-            <a href="index.php" class="btn btn-secondary">Back to Home</a>
+            
         </div>
     </div>
 
-    <script>
-        function toggleCustomGroup() {
-            const groupSelect = document.getElementById('groupSelect');
-            const customGroupContainer = document.getElementById('custom-group-container');
-            const customGroupInput = document.getElementById('customGroupInput');
-
-            if (groupSelect.value === 'Other') {
-                customGroupContainer.style.display = 'block';
-                customGroupInput.setAttribute('required', 'required');
-            } else {
-                customGroupContainer.style.display = 'none';
-                customGroupInput.removeAttribute('required');
-                customGroupInput.value = '';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', toggleCustomGroup);
-
-                //ToggleMode
-                const themeToggle = document.getElementById('themeToggle');
-        const themeLabel = document.querySelector('.theme-label');
-        const body = document.body;
-        
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            body.classList.add('dark-mode');
-            themeLabel.textContent = 'Dark Mode';
-        } else {
-            themeLabel.textContent = 'Light Mode';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDarkMode = body.classList.contains('dark-mode');
-            themeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,30 +1,62 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 include 'connection.php';
+
+    //Fetch contacts
+    $sql = "SELECT id, name, email, phone, group_name FROM contacts ORDER BY name ASC";
+    $result = mysqli_query($con, $sql);
+
+    $rows = array(); // Initialize as an empty array
+    if ($result) { // Check if query was successful
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($rows, $row); // Use array_push instead of [] for PHP < 5.4 compatibility
+        }
+    }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Contacts</title>
     <link rel="stylesheet" href="style.css">
+    <?php
+    $group_names = array("Family", "Friends", "Work"); // Default options
+    $result_groups = mysqli_query($con, "SELECT DISTINCT group_name FROM contacts WHERE group_name IS NOT NULL AND group_name != ''");
+    if ($result_groups) {
+        while ($row_group = mysqli_fetch_assoc($result_groups)) { // Renamed $row to $row_group to avoid conflicts
+            $name = $row_group['group_name'];
+            if (!in_array($name, $group_names, true)) {
+                array_push($group_names, $name); // Changed from [] to array_push for PHP < 5.4 compatibility
+            }
+        }
+    }
+    ?>
 </head>
+
 <body>
     <div class="container">
         <div class="theme-toggle" id="themeToggle">
-  <div class="toggle-handle">
-    <i class="fas fa-sun"></i>
-  </div>
-</div>
-<span class="theme-label">Light Mode</span>
-        <header>
-            <h2>Contact List</h2>
-            <a href="index.php" class="btn btn-secondary">Back to Home</a>
+            <div class="toggle-handle">
+                <i class="fas fa-sun"></i>
+            </div>
+        </div>
+        <span class="theme-label">Light Mode</span>
 
+        <header>
+            <div class="header-content">
+                <h2>Contact List</h2>
+                <div>
+                    <a href="index.php" class="btn btn-secondary">Back to Home</a>
+                    <a href="add_contact.php" class="btn btn-success">Add Contact</a>
+                </div>
                 <div class="search-container">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search contacts by name or phone..." autocomplete="off">
-                    <button class="btn" onclick="searchContact()">Search</button>
+                    <input type="text" id="searchInput" class="search-input"
+                        placeholder="Search contacts by name or phone..." autocomplete="off">
+                    <button class="btn">Search</button>
                 </div>
                 <div id="contactCount">
                     <?php
@@ -34,14 +66,12 @@ include 'connection.php';
                     echo $count_row['total'] . " contact(s)";
                     ?>
                 </div>
+            </div>
         </header>
-        
+
         <div id="contactsContainer">
-            <?php
-            $query = "SELECT * FROM contacts ORDER BY name ASC";
-            $result = mysqli_query($con, $query);
             
-            if (mysqli_num_rows($result) > 0): ?>
+            <?php if (!empty($rows)): ?>
                 <table>
                     <thead>
                         <tr>
@@ -49,135 +79,63 @@ include 'connection.php';
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Group</th>
-                            <th colspan="3">Actions</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php 
+                        <?php
                         $current_letter = '';
-                        while ($row = mysqli_fetch_assoc($result)):
+                        foreach ($rows as $row):
                             $first_letter = strtoupper(substr($row['name'], 0, 1));
-                            
-                            if ($first_letter !== $current_letter):
-                                echo "<tr class='letter-header'><td colspan='7'>{$first_letter}</td></tr>";
+                            if ($first_letter !== $current_letter) {
+                                // Add letter header only if it's a new letter and contact name is not empty
+                                if (!empty($row['name'])) {
+                                    echo "<tr class='letter-header'><td colspan='5'>{$first_letter}</td></tr>"; // colspan adjusted to 5
+                                }
                                 $current_letter = $first_letter;
-                            endif;
-                        ?>
+                            }
+                            ?>
                             <tr class="contact-row">
-                                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                                <td><?php echo htmlspecialchars($row['group_name']); ?></td>
-                                <td><a href="edit_contact.php?id=<?php echo $row['id']; ?>" class="btn btn-success">Edit</a></td>
-                                <td><a href="delete_contact.php?id=<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this contact?');">Delete</a></td>
-                                <td><a href="share.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Share</a></td>
+                                <td data-label="Name">
+                                    <span class="ellipsis-cell" title="<?php echo htmlspecialchars($row['name']); ?>">
+                                        <?php echo htmlspecialchars($row['name']); ?>
+                                    </span>
+                                </td>
+                                <td data-label="Email">
+                                    <span class="ellipsis-cell" title="<?php echo htmlspecialchars($row['email']); ?>">
+                                        <?php echo htmlspecialchars($row['email']); ?>
+                                    </span>
+                                </td>
+                                <td data-label="Phone">
+                                    <?php echo htmlspecialchars($row['phone']); ?>
+                                </td>
+                                <td data-label="Group">
+                                    <span class="ellipsis-cell"
+                                        title="<?php echo htmlspecialchars(!empty($row['group_name']) ? $row['group_name'] : 'Uncategorized'); ?>">
+                                        <?php echo htmlspecialchars(!empty($row['group_name']) ? $row['group_name'] : 'Uncategorized'); ?>
+                                    </span>
+                                </td>
+                               <td class="actions">
+                                    <div class="actions-container">
+                                        <a href="edit_contact.php?id=<?php echo $row['id']; ?>" class="btn btn-success">Edit</a>
+                                        <a href="delete_contact.php?id=<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this contact?');">Delete</a>
+                                        <a href="share.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Share</a>
+                                    </div>
+                                </td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             <?php else: ?>
-                <div class="empty-groups">
-                    <p>No groups found. Start by adding contacts to groups.</p>
-                    <a href="add_contact.php" class="btn">Add New Contact</a>
+                <div class="empty-group">
+                    <p>No contacts found.</p>
+                    <a href="add_contact.php" class="btn btn-success">Add Contact</a>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            const contactsContainer = document.getElementById('contactsContainer');
-            const contactCount = document.getElementById('contactCount');
-            const originalHTML = contactsContainer.innerHTML;
-            let debounceTimer;
-
-            function escapeRegex(string) {
-                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            }
-
-            function highlightText(text, searchTerm) {
-                if (!searchTerm) return text;
-                const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
-                return text.replace(regex, '<span class="highlight">$1</span>');
-            }
-
-            function filterContacts(searchTerm) {
-                if (searchTerm.length === 0) {
-                    contactsContainer.innerHTML = originalHTML;
-                    contactCount.textContent = document.querySelectorAll('.contact-row').length + " contact(s)";
-                    return;
-                }
-
-                const term = searchTerm.toLowerCase();
-                const rows = document.querySelectorAll('.contact-row');
-                let visibleCount = 0;
-                let currentLetter = '';
-                let newHTML = '<table><tbody>';
-
-                rows.forEach(row => {
-                    const name = row.cells[0].textContent.toLowerCase();
-                    const phone = row.cells[2].textContent;
-
-                    if (name.includes(term) || phone.includes(term)) {
-                        const firstLetter = name.charAt(0).toUpperCase();
-
-                        if (firstLetter !== currentLetter) {
-                            newHTML += `<tr class='letter-header'><td colspan='7'>${firstLetter}</td></tr>`;
-                            currentLetter = firstLetter;
-                        }
-
-                        const newRow = row.cloneNode(true);
-                        newRow.cells[0].innerHTML = highlightText(row.cells[0].textContent, searchTerm);
-                        newRow.cells[2].innerHTML = highlightText(row.cells[2].textContent, searchTerm);
-                        newHTML += newRow.outerHTML;
-                        visibleCount++;
-                    }
-                });
-
-                newHTML += '</tbody></table>';
-
-                if (visibleCount === 0) {
-                    contactsContainer.innerHTML = '<div class="no-results">No matches found</div>';
-                } else {
-                    contactsContainer.innerHTML = newHTML;
-                }
-
-                contactCount.textContent = visibleCount + (visibleCount === 1 || visibleCount === 0 ? " contact" : " contacts");
-            }
-
-            searchInput.addEventListener('input', function() {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    filterContacts(this.value.trim());
-                }, 300);
-            });
-
-            searchInput.focus();
-
-
-                    //ToggleMode
-                const themeToggle = document.getElementById('themeToggle');
-        const themeLabel = document.querySelector('.theme-label');
-        const body = document.body;
-        
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            body.classList.add('dark-mode');
-            themeLabel.textContent = 'Dark Mode';
-        } else {
-            themeLabel.textContent = 'Light Mode';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDarkMode = body.classList.contains('dark-mode');
-            themeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
+
 </html>

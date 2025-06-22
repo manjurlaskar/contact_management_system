@@ -56,7 +56,7 @@ if (isset($_POST['save_btn'])) {
                 <input type="text" name="phone" placeholder="Enter Phone Number" required>
 
                 <label for="group">Group</label>
-                <select name="group" id="groupSelect" onchange="toggleCustomGroup()" >
+                <select name="group" id="groupSelect">
                     <option value="">-- Select Group --</option>
                     <option value="Family">Family</option>
                     <option value="Friends">Friends</option>
@@ -78,44 +78,6 @@ if (isset($_POST['save_btn'])) {
         </div>
     </div>
 
-    <script>
-        function toggleCustomGroup() {
-            const groupSelect = document.getElementById('groupSelect');
-            const customGroupContainer = document.getElementById('custom-group-container');
-            const customGroupInput = document.getElementById('customGroupInput');
-
-            if (groupSelect.value === 'Other') {
-                customGroupContainer.style.display = 'block';
-                customGroupInput.setAttribute('required', 'required');
-            } else {
-                customGroupContainer.style.display = 'none';
-                customGroupInput.removeAttribute('required');
-                customGroupInput.value = '';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', toggleCustomGroup);
-        //ToggleMode
-                const themeToggle = document.getElementById('themeToggle');
-        const themeLabel = document.querySelector('.theme-label');
-        const body = document.body;
-        
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            body.classList.add('dark-mode');
-            themeLabel.textContent = 'Dark Mode';
-        } else {
-            themeLabel.textContent = 'Light Mode';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDarkMode = body.classList.contains('dark-mode');
-            themeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -61,28 +61,6 @@ if (isset($_POST['import'])) {
         </form>
     </div>
 
-    <script>
-                //ToggleMode
-                const themeToggle = document.getElementById('themeToggle');
-        const themeLabel = document.querySelector('.theme-label');
-        const body = document.body;
-        
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            body.classList.add('dark-mode');
-            themeLabel.textContent = 'Dark Mode';
-        } else {
-            themeLabel.textContent = 'Light Mode';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDarkMode = body.classList.contains('dark-mode');
-            themeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

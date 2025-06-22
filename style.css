@@ -10,15 +10,19 @@
     --btn-text: #ffffff;
     --border: #dee2e6;
     --shadow: rgba(0, 0, 0, 0.05);
+    --header-bg: #ffffff;
+    --header-text: #212529;
+    --header-shadow: rgba(0, 0, 0, 0.05);
+    --header-border: #ddd;
 
-    /* Specific for letter-header in light mode */
+    /* Letter-header in light mode */
     --letter-header-light-bg: #4d7dc5;
     --letter-header-light-text: white;
     --letter-header-light-border-left: #3a62a0;
 
-    /* New/Adjusted variables for table row backgrounds in light mode */
-    --table-row-even-bg: #f2f2f2; /* Slightly darker than --bg, lighter than --container-bg */
-    --table-row-hover-bg: #e6e6e6; /* Even lighter for hover in light mode */
+    /* Table row backgrounds in light mode */
+    --table-row-even-bg: #f2f2f2;
+    --table-row-hover-bg: #e6e6e6;
 }
 
 body.dark-mode {
@@ -37,14 +41,14 @@ body.dark-mode {
     --border: #334155;
     --shadow: rgba(0, 0, 0, 0.3);
 
-    /* Specific for letter-header in dark mode */
+    /* Letter-header in dark mode */
     --letter-header-dark-bg: #3a62a0;
     --letter-header-dark-text: white;
     --letter-header-dark-border-left: #3a62a0;
 
-    /* New/Adjusted variables for table row backgrounds in dark mode */
-    --table-row-even-bg: #28374a; /* Slightly lighter than --container-bg */
-    --table-row-hover-bg: #324559; /* Even lighter for hover in dark mode */
+    /* Table row backgrounds in dark mode */
+    --table-row-even-bg: #28374a;
+    --table-row-hover-bg: #324559;
 }
 
 /* ===== GLOBAL RESET & BASE STYLES ===== */
@@ -102,18 +106,27 @@ hr {
     transition: border-color 0.3s;
 }
 
-/* ===== HEADER STYLES (Main Page Header) ===== */
+/* ===== HEADER STYLES ===== */
 header {
     padding: 20px;
     position: sticky;
     top: 0;
     z-index: 1000;
     transition: all 0.3s ease-in-out;
-
     background-color: white;
     color: #212529;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid #ddd;
+}
+
+.header-content {
+    width: 100%;
+    padding: 15px;
+}
+
+#contactsContainer {
+    margin-top: 20px;
+    width: 100%;
 }
 
 body.dark-mode header {
@@ -249,23 +262,20 @@ th {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* REVISED TABLE ROW STYLING */
 tbody tr:nth-child(even) {
-    background-color: var(--table-row-even-bg); /* Use new variable for even rows */
+    background-color: var(--table-row-even-bg);
 }
 
 tbody tr:hover {
-    background-color: var(--table-row-hover-bg); /* Use new variable for hover */
+    background-color: var(--table-row-hover-bg);
 }
 
-/* ===== LETTER HEADER SPECIFIC STYLES ===== */
+/* ===== LETTER HEADER STYLES ===== */
 .letter-header td {
     padding: 8px 12px;
     font-weight: bold;
     font-size: 18px;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-
-    /* Light Mode (Default) */
     background-color: var(--letter-header-light-bg);
     color: var(--letter-header-light-text);
     border-left: 4px solid var(--letter-header-light-border-left);
@@ -316,25 +326,28 @@ body.dark-mode .letter-header td {
     background-color: var(--btn-hover);
 }
 
-/* ===== GROUP CARD STYLES ===== */
+/* ===== GROUP CARD STYLES (REVISED FOR RESPONSIVENESS) ===== */
 .groups-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     gap: 20px;
-    margin-top: 20px;
+    justify-content: center;
+    padding: 1rem;
 }
 
 .group-card {
-    flex: 1 1 calc(33.33% - 20px);/* 3 cards per row with spacing */
-    max-width: calc(33.33% - 20px);
-    box-sizing: border-box;
-    background-color: var(--container-bg); /* Use theme variable */
-    border: 1px solid var(--border);       /* Use theme variable */
+    background-color: var(--container-bg);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px var(--shadow);   /* Use theme variable */
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1 0 calc(33.33% - 20px);
+    /* min-width: 250px; */
     transition: transform 0.2s, background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
 }
 
 .group-card:hover {
@@ -355,10 +368,10 @@ body.dark-mode .letter-header td {
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--btn-bg);
-    white-space: nowrap;         /* Prevents text from wrapping */
-    overflow: hidden;            /* Hides overflowed content */
-    text-overflow: ellipsis;     /* Shows "..." for overflow */
-    max-width: 200px;            /* Optional: limits width if needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
     cursor: pointer;
 }
 
@@ -407,10 +420,6 @@ body.dark-mode .letter-header td {
     transition: all 0.3s;
 }
 
-#groupCount, #contactCount {
-    color: var(--text);
-}
-
 /* ===== UTILITY CLASSES ===== */
 .contact-count u {
     margin: 10px 0;
@@ -447,13 +456,13 @@ body.dark-mode .letter-header td {
     margin: 5px;
 }
 
-.share-options {
-    text-align: center;
-    margin-top: 30px;
-}
-
-.share-options .btn {
-    margin: 10px;
+.ellipsis-cell {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    cursor: context-menu;
 }
 
 /* ===== MODAL STYLES ===== */
@@ -482,7 +491,7 @@ body.dark-mode .letter-header td {
     transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
 }
 
-#renameModal input[type="text"] {
+#renameModal #newGroupName {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border);
@@ -544,39 +553,176 @@ body.dark-mode .toggle-handle {
     color: white;
 }
 
-/* ===== RESPONSIVE STYLES ===== */
-@media (max-width: 768px) {
+.actions-container {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ===== RESPONSIVE MEDIA QUERIES (REVISED) ===== */
+/* Medium screens (tablets) */
+@media (max-width: 991px) {
+    .group-card {
+        flex: 1 0 calc(50% - 20px);
+    }
+    
+    .actions-container {
+        gap: 6px;
+    }
+    
+    .actions-container .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Small screens (large phones) */
+@media (max-width: 715px) {
+    body {
+        padding: 20px 10px;
+    }
+    
     .container {
         padding: 15px;
     }
     
-    .groups-container {
+    header {
+        padding: 15px;
+    }
+    
+    .header-content {
+        padding: 10px;
+    }
+    
+    #contactsContainer {
+        margin-top: 15px;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+        padding: 10px 0;
+    }
+    
+    .search-container {
         flex-direction: column;
     }
     
+    .search-input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .btn {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    /* Tables */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+    }
+    
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+    
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    /* Group cards */
+    .groups-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
     .group-card {
+        flex: 1 0 100%;
+        min-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    #renameModal .modal-content {
+        padding: 15px;
+    }
+}
+
+/* Extra small screens (phones) */
+@media (max-width: 576px) {
+    body {
+        padding: 10px 5px;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    header {
+        padding: 10px;
+    }
+    
+    .header-content {
+        padding: 0px;
+    }
+    
+    #contactsContainer {
+        margin-top: 5px;
+    }
+    
+    h2 {
+        font-size: 1rem;
+        padding: 10px 0;
+    }
+    
+    .search-input {
+        margin-bottom: 5px;
+    }
+    
+    .actions-container {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .actions-container .btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .group-card {
+        padding: 15px;
+    }
+    
+    .group-actions {
+        flex-direction: column;
+    }
+    
+    .group-actions .btn {
         width: 100%;
     }
-    .theme-toggle {
-        top: 10px;
-        right: 10px;
-    }
-    .theme-label {
-        top: 40px;
-        right: 10px;
-    }
-}
-
-@media (max-width: 900px) {
-    .group-card {
-        flex: 1 1 calc(50% - 20px); /* 2 cards per row on tablets */
-        max-width: calc(50% - 20px);
-    }
-}
-
-@media (max-width: 600px) {
-    .group-card {
-        flex: 1 1 100%; /* 1 card per row on mobile */
-        max-width: 100%;
+    
+    .group-name {
+        max-width: 160px;
     }
 }
